@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+
+import './App.scss';
+import 'antd/dist/antd.css';
+
+import { MainPage } from './pages/MainPage/MainPage';
+import { Routes, Route } from 'react-router-dom';
+import { Layout } from './components/Layout/Layout';
+import { ProductPage } from './pages/ProductPage/ProductPage';
+import { FavouritePage } from './pages/FavouritePage/FavouritePage';
+import { CartPage } from './pages/CartPage/CartPage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<MainPage />} />
+          <Route path="product/:productId" element={<ProductPage />} />
+          <Route path="smartphones" element={<MainPage />} />
+          <Route path="pcs" element={<MainPage />} />
+          <Route path="pads" element={<MainPage />} />
+          <Route path="favourite" element={<FavouritePage />} />
+          <Route path="cart" element={<CartPage />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 
