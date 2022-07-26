@@ -9,9 +9,8 @@ import { ContentCard } from '../../components/ContentCard/ContentCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsLoading, setProduct } from '../../redux/slices/productSlice';
 import { Input } from '../../components/Input/Input';
-import { NavLink } from 'react-router-dom';
-import { SortBlock } from '../../components/SortBlock/SortBlock';
-import { ContentCardSkeleton } from '../../components/ContentCard/ContentCardSkeleton/ContentCardSkeleton/ContentCardSkeleton';
+import { ContentCardSkeleton } from '../../components/ContentCard/ContentCardSkeleton/ContentCardSkeleton';
+import { EmptyCart } from '../../components/EmptyCart/EmptyCart';
 
 const { Content } = Layout;
 
@@ -27,7 +26,7 @@ export const FavouritePage = () => {
   const order = sortType.includes('-') ? 'desc' : 'asc';
   const search = searchValue ? `search=${searchValue}` : '';
 
-  React.useEffect(() => {
+  const getProduct = () => {
     try {
       axios
         .get(
@@ -40,7 +39,28 @@ export const FavouritePage = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  React.useEffect(() => {
+    getProduct();
   }, [sortType, searchValue, currentPage]);
+
+  const likeProduct = (index) => {
+    const updatedProduct = JSON.parse(JSON.stringify(products));
+    updatedProduct[index].liked = !updatedProduct[index].liked;
+    console.log(updatedProduct[index].liked);
+
+    try {
+      axios
+        .put(
+          'https://62cfc4261cc14f8c087ce036.mockapi.io/Shop' + '/' + updatedProduct[index].id,
+          updatedProduct[index],
+        )
+        .then(() => getProduct());
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Content>
@@ -53,23 +73,32 @@ export const FavouritePage = () => {
           <Pagination />
           <div className={styles.filterBlock}>
             <Input />
-            <SortBlock />
           </div>
-          <Content className={styles.content}>
-            {loading
-              ? [...new Array(10)].map((_, index) => {
-                  <ContentCardSkeleton key={index} />;
-                })
-              : products
-                  .filter((item) => item.liked === true)
-                  .map((product) => {
-                    return (
-                      <NavLink to={`/product/${product.id}`}>
-                        <ContentCard key={product.name} {...product} />;
-                      </NavLink>
-                    );
-                  })}
-          </Content>
+          {products.filter((item) => item.liked).length > 0 ? (
+            <Content className={styles.content}>
+              {loading
+                ? [...new Array(10)].map((_, index) => {
+                    <ContentCardSkeleton key={index} />;
+                  })
+                : products
+                    .filter((item) => item.liked === true)
+                    .map((product, index) => {
+                      return (
+                        <ContentCard
+                          key={product.name}
+                          likeProduct={() => likeProduct(index)}
+                          {...product}
+                        />
+                      );
+                    })}
+            </Content>
+          ) : (
+            <EmptyCart
+              title="Избранных товаров нет 😕"
+              desc1="Вероятней всего, вы не добавили товар в избранное."
+              desc2="Для того, что бы добавить товар в избранное перейдите на главную страницу."
+            />
+          )}
         </div>
       </Layout>
     </Content>

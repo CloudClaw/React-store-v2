@@ -1,0 +1,10 @@
+.cartEmpty {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 60px;
+	& h2 {
+		margin-bottom: 50px;
+	}
+}

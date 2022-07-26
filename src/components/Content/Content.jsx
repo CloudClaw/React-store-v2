@@ -8,11 +8,11 @@ import { Pagination } from '../Pagination/Pagination';
 import { ContentCard } from '../ContentCard/ContentCard';
 import { SideBar } from '../SideBar/SideBar';
 import { useDispatch, useSelector } from 'react-redux';
-import { setProduct } from '../../redux/slices/productSlice';
+import { setIsLoading, setProduct } from '../../redux/slices/productSlice';
 import { Input } from '../Input/Input';
-import { NavLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { SortBlock } from '../SortBlock/SortBlock';
-import { ContentCardSkeleton } from '../ContentCard/ContentCardSkeleton/ContentCardSkeleton/ContentCardSkeleton';
+import { ContentCardSkeleton } from '../ContentCard/ContentCardSkeleton/ContentCardSkeleton';
 
 const { Content: ContentBlock } = Layout;
 
@@ -23,13 +23,26 @@ export const Content = () => {
   const sortType = useSelector((state) => state.filter.sort);
   const searchValue = useSelector((state) => state.filter.searchValue.toLowerCase());
   const currentPage = useSelector((state) => state.product.currentPage);
-
-  const [loading, setLoading] = React.useState(true);
+  const loading = useSelector((state) => state.product.isLoading);
 
   const sortBy = sortType.replace('-', '');
   const order = sortType.includes('-') ? 'desc' : 'asc';
   const search = searchValue ? `search=${searchValue}` : '';
 
+  const getProduct = () => {
+    try {
+      axios
+        .get(
+          `https://62cfc4261cc14f8c087ce036.mockapi.io/Shop?page=${currentPage}&limit=10&sortBy=${sortBy}&order=${order}&${search}`,
+        )
+        .then((response) => {
+          dispatch(setProduct(response.data));
+          dispatch(setIsLoading(false));
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getProductsForPages = () => {
     switch (location.pathname) {
       case '/smartphones':
@@ -47,19 +60,25 @@ export const Content = () => {
   };
 
   React.useEffect(() => {
+    getProduct();
+  }, [sortType, searchValue, currentPage]);
+
+  const likeProduct = (index) => {
+    const updatedProduct = JSON.parse(JSON.stringify(products));
+    updatedProduct[index].liked = !updatedProduct[index].liked;
+    console.log(updatedProduct[index].liked);
+
     try {
       axios
-        .get(
-          `https://62cfc4261cc14f8c087ce036.mockapi.io/Shop?page=${currentPage}&limit=10&sortBy=${sortBy}&order=${order}&${search}`,
+        .put(
+          'https://62cfc4261cc14f8c087ce036.mockapi.io/Shop' + '/' + updatedProduct[index].id,
+          updatedProduct[index],
         )
-        .then((response) => {
-          dispatch(setProduct(response.data));
-			 setLoading(false)
-        });
+        .then(() => getProduct());
     } catch (error) {
       console.log(error);
     }
-  }, [sortType, searchValue, currentPage]);
+  };
 
   return (
     <ContentBlock>
@@ -77,14 +96,16 @@ export const Content = () => {
           </div>
           <ContentBlock className={styles.content}>
             {loading
-              ? [...new Array(10)].map((_, index) => {
+              ? [...new Array(15)].map((_, index) => {
                   return <ContentCardSkeleton key={index} />;
                 })
               : getProductsForPages().map((product, index) => {
                   return (
-                    <NavLink to={`/product/${product.id}`}>
-                      <ContentCard key={product.name} {...product} />;
-                    </NavLink>
+                    <ContentCard
+                      likeProduct={() => likeProduct(index)}
+                      key={product.name}
+                      {...product}
+                    />
                   );
                 })}
           </ContentBlock>

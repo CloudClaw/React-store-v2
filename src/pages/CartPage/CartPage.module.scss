@@ -1,0 +1,12 @@
+.filterBlock {
+	display: flex;
+}
+.amount {
+	background-color: white;
+	width: 300px;
+	margin-left: 50px;
+	margin-top: 50px;
+	& span {
+		margin-left: 25%;
+	}
+}

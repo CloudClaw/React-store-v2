@@ -1,0 +1,42 @@
+.card {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	width: calc(100vw - 200px);
+	height: 130px;
+	margin-left: 50px;
+	margin-top: 30px;
+	background-color: white;
+}
+.cardImg {
+	height: 100px;
+	width: 100px;
+}
+.cardSpan {
+	margin: 0 10px;
+	font-size: 20px;
+}
+.content {
+	width: 50%;
+}
+.buttons {
+	display: flex;
+	align-items: center;
+	width: 50%;
+	margin: 0 auto;
+}
+.plus {
+	margin-right: 10px;
+}
+.minus {
+	margin-left: 10px;
+}
+.countSpan {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 30px;
+	background-color: #f0f2f5;
+	border-radius: 10%;
+}

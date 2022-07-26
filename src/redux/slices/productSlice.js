@@ -4,7 +4,7 @@ const initialState = {
   products: [],
   singleProduct: {},
   isLoading: false,
-  currentPage: 1
+  currentPage: 1,
 };
 
 export const productSlice = createSlice({
