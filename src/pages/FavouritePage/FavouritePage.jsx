@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { ContentCard } from '../../components/ContentCard/ContentCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { setIsLoading, setProduct } from '../../redux/slices/productSlice';
+import { fetchProducts } from '../../redux/slices/productSlice';
 import { Input } from '../../components/Input/Input';
 import { ContentCardSkeleton } from '../../components/ContentCard/ContentCardSkeleton/ContentCardSkeleton';
 import { EmptyCart } from '../../components/EmptyCart/EmptyCart';
@@ -22,41 +22,35 @@ export const FavouritePage = () => {
   const loading = useSelector((state) => state.product.isLoading);
   const currentPage = useSelector((state) => state.product.currentPage);
 
-  const sortBy = sortType.replace('-', '');
-  const order = sortType.includes('-') ? 'desc' : 'asc';
-  const search = searchValue ? `search=${searchValue}` : '';
+  const getProduct = async () => {
+    const sortBy = sortType.replace('-', '');
+    const order = sortType.includes('-') ? 'desc' : 'asc';
+    const search = searchValue ? `search=${searchValue}` : '';
 
-  const getProduct = () => {
-    try {
-      axios
-        .get(
-          `https://62cfc4261cc14f8c087ce036.mockapi.io/Shop?page=${currentPage}&limit=10&sortBy=${sortBy}&order=${order}&${search}`,
-        )
-        .then((response) => {
-          dispatch(setProduct(response.data));
-          dispatch(setIsLoading(false));
-        });
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(
+      fetchProducts({
+        sortBy,
+        order,
+        search,
+        currentPage,
+      }),
+    );
   };
 
   React.useEffect(() => {
     getProduct();
   }, [sortType, searchValue, currentPage]);
 
-  const likeProduct = (index) => {
+  const likeProduct = async (index) => {
     const updatedProduct = JSON.parse(JSON.stringify(products));
     updatedProduct[index].liked = !updatedProduct[index].liked;
-    console.log(updatedProduct[index].liked);
 
     try {
-      axios
-        .put(
-          'https://62cfc4261cc14f8c087ce036.mockapi.io/Shop' + '/' + updatedProduct[index].id,
-          updatedProduct[index],
-        )
-        .then(() => getProduct());
+      const response = await axios.put(
+        'https://62cfc4261cc14f8c087ce036.mockapi.io/Shop' + '/' + updatedProduct[index].id,
+        updatedProduct[index],
+      );
+      getProduct();
     } catch (error) {
       console.log(error);
     }
