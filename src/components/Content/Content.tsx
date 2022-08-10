@@ -7,23 +7,24 @@ import axios from 'axios';
 import { Pagination } from '../Pagination/Pagination';
 import { ContentCard } from '../ContentCard/ContentCard';
 import { SideBar } from '../SideBar/SideBar';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../../redux/slices/productSlice';
+import { fetchProducts, selectProduct } from '../../redux/slices/productSlice';
 import { Input } from '../Input/Input';
 import { useLocation } from 'react-router-dom';
 import { SortBlock } from '../SortBlock/SortBlock';
 import { ContentCardSkeleton } from '../ContentCard/ContentCardSkeleton/ContentCardSkeleton';
+import { selectFilterSearch, selectSort } from '../../redux/slices/filterSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 const { Content: ContentBlock } = Layout;
 
-export const Content = () => {
-  const dispatch = useDispatch();
+export const Content: React.FC = () => {
+  const dispatch = useAppDispatch();
   const location = useLocation();
-  const products = useSelector((state) => state.product.products);
-  const sortType = useSelector((state) => state.filter.sort);
-  const searchValue = useSelector((state) => state.filter.searchValue.toLowerCase());
-  const currentPage = useSelector((state) => state.product.currentPage);
-  const loading = useSelector((state) => state.product.isLoading);
+  const products = useAppSelector(selectProduct);
+  const sortType = useAppSelector(selectSort);
+  const searchValue = useAppSelector(selectFilterSearch);
+  const currentPage = useAppSelector((state) => state.product.currentPage);
+  const loading = useAppSelector((state) => state.product.isLoading);
 
   const getProduct = async () => {
     const sortBy = sortType.replace('-', '');
@@ -35,7 +36,7 @@ export const Content = () => {
         sortBy,
         order,
         search,
-        currentPage,
+        currentPage: String(currentPage),
       }),
     );
   };
@@ -60,12 +61,12 @@ export const Content = () => {
     getProduct();
   }, [sortType, searchValue, currentPage]);
 
-  const likeProduct = async (index) => {
+  const likeProduct = async (index:number) => {
     const updatedProduct = JSON.parse(JSON.stringify(products));
     updatedProduct[index].liked = !updatedProduct[index].liked;
 
     try {
-      const response = await axios.put(
+      await axios.put(
         'https://62cfc4261cc14f8c087ce036.mockapi.io/Shop' + '/' + updatedProduct[index].id,
         updatedProduct[index],
       );
@@ -94,7 +95,7 @@ export const Content = () => {
               ? [...new Array(15)].map((_, index) => {
                   return <ContentCardSkeleton key={index} />;
                 })
-              : getProductsForPages().map((product, index) => {
+              : getProductsForPages().map((product:any, index:number) => {
                   return (
                     <ContentCard
                       likeProduct={() => likeProduct(index)}

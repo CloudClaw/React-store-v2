@@ -3,16 +3,25 @@ import React from 'react';
 import styles from './CartCard.module.scss';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
-import { addToCart, minusItem } from '../../redux/slices/cartSlice';
+import { addToCart, CartItem, minusItem } from '../../redux/slices/cartSlice';
 
-export const CartCard = ({ id, img, price, name, count }) => {
+type CartCardProps = {
+	id: number;
+	img: string;
+	price: number;
+	name: string;
+	count: number;
+	index: number;
+}
+
+export const CartCard: React.FC<CartCardProps> = ({ id, img, price, name, count }) => {
   const dispatch = useDispatch();
 
   const onClickPlus = () => {
     dispatch(
       addToCart({
-        id,
-      }),
+			id,
+      } as CartItem),
     );
   };
 

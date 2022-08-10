@@ -3,16 +3,14 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import styles from './Input.module.scss';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Input as InputField } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
 import { setValue } from '../../redux/slices/filterSlice';
 
-export const Input = () => {
+export const Input: React.FC = () => {
   const dispatch = useDispatch();
-  const value = useSelector((state) => state.filter.searchValue);
 
-  const onChangeValue = (e) => {
+  const onChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setValue(e.target.value));
   };
 

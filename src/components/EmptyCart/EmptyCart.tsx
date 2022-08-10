@@ -5,7 +5,13 @@ import styles from './EmptyCart.module.scss';
 
 import cartEmptyImg from '../../assets/empty-cart.png';
 
-export const EmptyCart = ({ title, desc1, desc2 }) => {
+type EmptyCartProps = {
+	title:string;
+	desc1: string;
+	desc2: string;
+}
+
+export const EmptyCart:React.FC<EmptyCartProps> = ({ title, desc1, desc2 }) => {
   return (
     <>
       <div className={styles.cartEmpty}>

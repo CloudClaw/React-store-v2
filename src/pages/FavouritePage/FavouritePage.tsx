@@ -6,21 +6,24 @@ import { Layout } from 'antd';
 import axios from 'axios';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { ContentCard } from '../../components/ContentCard/ContentCard';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { fetchProducts } from '../../redux/slices/productSlice';
 import { Input } from '../../components/Input/Input';
 import { ContentCardSkeleton } from '../../components/ContentCard/ContentCardSkeleton/ContentCardSkeleton';
 import { EmptyCart } from '../../components/EmptyCart/EmptyCart';
+import { selectSort } from '../../redux/slices/filterSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 const { Content } = Layout;
 
-export const FavouritePage = () => {
-  const dispatch = useDispatch();
-  const products = useSelector((state) => state.product.products);
-  const sortType = useSelector((state) => state.filter.sort);
-  const searchValue = useSelector((state) => state.filter.searchValue.toLowerCase());
-  const loading = useSelector((state) => state.product.isLoading);
-  const currentPage = useSelector((state) => state.product.currentPage);
+export const FavouritePage: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const products = useAppSelector((state) => state.product.products);
+  const sortType = useSelector(selectSort);
+  const searchValue = useAppSelector((state) => state.filter.searchValue.toLowerCase());
+  const loading = useAppSelector((state) => state.product.isLoading);
+  const currentPage = useAppSelector((state) => state.product.currentPage);
 
   const getProduct = async () => {
     const sortBy = sortType.replace('-', '');
@@ -32,7 +35,7 @@ export const FavouritePage = () => {
         sortBy,
         order,
         search,
-        currentPage,
+        currentPage: String(currentPage),
       }),
     );
   };
@@ -41,12 +44,12 @@ export const FavouritePage = () => {
     getProduct();
   }, [sortType, searchValue, currentPage]);
 
-  const likeProduct = async (index) => {
+  const likeProduct = async (index:number) => {
     const updatedProduct = JSON.parse(JSON.stringify(products));
     updatedProduct[index].liked = !updatedProduct[index].liked;
 
     try {
-      const response = await axios.put(
+      await axios.put(
         'https://62cfc4261cc14f8c087ce036.mockapi.io/Shop' + '/' + updatedProduct[index].id,
         updatedProduct[index],
       );
@@ -68,15 +71,16 @@ export const FavouritePage = () => {
           <div className={styles.filterBlock}>
             <Input />
           </div>
-          {products.filter((item) => item.liked).length > 0 ? (
+          {products.filter((item:any) => item.liked).length > 0 ? (
             <Content className={styles.content}>
+					<>
               {loading
                 ? [...new Array(10)].map((_, index) => {
                     <ContentCardSkeleton key={index} />;
                   })
                 : products
-                    .filter((item) => item.liked === true)
-                    .map((product, index) => {
+                    .filter((item:any) => item.liked === true)
+                    .map((product:any, index:number) => {
                       return (
                         <ContentCard
                           key={product.name}
@@ -85,6 +89,7 @@ export const FavouritePage = () => {
                         />
                       );
                     })}
+						  </>
             </Content>
           ) : (
             <EmptyCart

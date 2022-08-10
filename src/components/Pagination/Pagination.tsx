@@ -5,19 +5,21 @@ import 'antd/dist/antd.css';
 import styles from './Pagination.module.scss';
 import { useDispatch } from 'react-redux';
 import { setIsCurrentPage } from '../../redux/slices/productSlice';
+import { useAppSelector } from '../../redux/store';
 
-export const Pagination = () => {
+export const Pagination: React.FC = () => {
   const dispatch = useDispatch();
-  const onChangePage = (event) => {
-    dispatch(setIsCurrentPage(event));
+  const currentPage = useAppSelector((state) => state.product.currentPage);
+  const onChangePage = (page:number) => {
+    dispatch(setIsCurrentPage(page));
   };
 
   return (
     <PagePagination
+      current={currentPage}
       onChange={onChangePage}
       className={styles.pagination}
       defaultPageSize={10}
-      defaultCurrent={1}
       total={30}
     />
   );

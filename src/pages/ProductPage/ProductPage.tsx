@@ -3,22 +3,22 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import styles from './ProductPage.module.scss';
 
-import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { Button, Card, Layout } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { setSingleProduct } from '../../redux/slices/productSlice';
+import { useAppSelector } from '../../redux/store';
 
 const { Meta } = Card;
 const { Content } = Layout;
 
-export const ProductPage = () => {
+export const ProductPage: React.FC = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const singleProducts = useSelector((state) => state.product.singleProduct);
+  const singleProducts = useAppSelector((state) => state.product.singleProduct);
 
   React.useEffect(() => {
     try {
@@ -39,8 +39,7 @@ export const ProductPage = () => {
       <Layout style={{ minHeight: '100vh' }}>
         {singleProducts && (
           <Card
-            className={styles.card}
-            actions={[<HeartOutlined key="like" />, <ShoppingCartOutlined key="cart" />]}>
+            className={styles.card}>
             <div className={styles.info}>
               <div className={styles.pic}>
                 <Meta avatar={<img src={singleProducts.img} alt={singleProducts.name} />} />

@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 
 const { Sider } = Layout;
 
-export const SideBar = () => {
+export const SideBar: React.FC = () => {
   return (
     <Sider className="site-layout-background" width={200}>
       <Menu

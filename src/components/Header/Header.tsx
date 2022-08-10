@@ -7,12 +7,13 @@ import logo from '../../assets/logo.svg';
 import { Layout, Menu } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { selectCart } from '../../redux/slices/cartSlice';
 
 const { Header: HeaderComponent } = Layout;
 
 export const Header = () => {
-  const { cartItems } = useSelector((state) => state.cart);
-  const totalCount = cartItems.reduce((sum, item) => sum + item.count, 0);
+  const { cartItems } = useSelector(selectCart);
+  const totalCount = cartItems.reduce((sum:number, item:any) => sum + item.count, 0);
 
   return (
     <HeaderComponent className={styles.header}>

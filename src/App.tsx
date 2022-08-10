@@ -9,6 +9,7 @@ import { Layout } from './components/Layout/Layout';
 import { ProductPage } from './pages/ProductPage/ProductPage';
 import { FavouritePage } from './pages/FavouritePage/FavouritePage';
 import { CartPage } from './pages/CartPage/CartPage';
+import { ErrorPage } from './pages/ErrorPage/ErrorPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="pads" element={<MainPage />} />
           <Route path="favourite" element={<FavouritePage />} />
           <Route path="cart" element={<CartPage />} />
+          <Route path="*" element={<ErrorPage />} />
         </Route>
       </Routes>
     </>

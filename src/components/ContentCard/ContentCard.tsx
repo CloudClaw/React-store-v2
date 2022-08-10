@@ -11,8 +11,19 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/slices/cartSlice';
 
 const { Meta } = Card;
+type ContentCardProps = {
+	id: number;
+	img: string;
+	price: number;
+	name: string;
+	likeProduct: () => void;
+	liked: boolean;
+	cart: boolean;
+	count: number;
+	index: number;
+}
 
-export const ContentCard = ({ id, img, price, name, likeProduct, liked, cart }) => {
+export const ContentCard: React.FC<ContentCardProps> = ({ id, img, price, name, likeProduct, liked, cart, count, index }) => {
   const dispatch = useDispatch();
 
   const customFillingLike = liked ? 'crimson' : 'black';
@@ -24,6 +35,8 @@ export const ContentCard = ({ id, img, price, name, likeProduct, liked, cart }) 
       name,
       price,
       img,
+		count,
+		index
     };
     dispatch(addToCart(item));
   };
