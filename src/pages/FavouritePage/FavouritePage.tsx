@@ -25,6 +25,7 @@ export const FavouritePage: React.FC = () => {
   const loading = useAppSelector((state) => state.product.isLoading);
   const currentPage = useAppSelector((state) => state.product.currentPage);
 
+
   const getProduct = async () => {
     const sortBy = sortType.replace('-', '');
     const order = sortType.includes('-') ? 'desc' : 'asc';
@@ -53,7 +54,7 @@ export const FavouritePage: React.FC = () => {
         'https://62cfc4261cc14f8c087ce036.mockapi.io/Shop' + '/' + updatedProduct[index].id,
         updatedProduct[index],
       );
-      getProduct();
+       getProduct();
     } catch (error) {
       console.log(error);
     }

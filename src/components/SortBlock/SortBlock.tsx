@@ -9,11 +9,12 @@ import { setSort } from '../../redux/slices/filterSlice';
 
 const { Option } = Select;
 
-export const SortBlock: React.FC = () => {
+export const SortBlock: React.FC = React.memo(() => {
+
   const dispatch = useDispatch();
-  const handleChangeSort = (value: string) => {
+  const handleChangeSort = React.useCallback((value: string) => {
     dispatch(setSort(value));
-  };
+  },[]);
 
   const list:{
 	name: string;
@@ -34,4 +35,4 @@ export const SortBlock: React.FC = () => {
       })}
     </Select>
   );
-};
+});

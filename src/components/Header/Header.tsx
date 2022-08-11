@@ -14,6 +14,15 @@ const { Header: HeaderComponent } = Layout;
 export const Header = () => {
   const { cartItems } = useSelector(selectCart);
   const totalCount = cartItems.reduce((sum:number, item:any) => sum + item.count, 0);
+  const isMounted = React.useRef(false)
+
+  React.useEffect(()=>{
+	if(isMounted.current){
+		const cartJson = JSON.stringify(cartItems)
+		localStorage.setItem('cart',cartJson)
+	}
+	isMounted.current = true
+  },[cartItems])
 
   return (
     <HeaderComponent className={styles.header}>
