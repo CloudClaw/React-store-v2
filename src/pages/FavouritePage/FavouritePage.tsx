@@ -25,7 +25,6 @@ export const FavouritePage: React.FC = () => {
   const loading = useAppSelector((state) => state.product.isLoading);
   const currentPage = useAppSelector((state) => state.product.currentPage);
 
-
   const getProduct = async () => {
     const sortBy = sortType.replace('-', '');
     const order = sortType.includes('-') ? 'desc' : 'asc';
@@ -41,11 +40,7 @@ export const FavouritePage: React.FC = () => {
     );
   };
 
-  React.useEffect(() => {
-    getProduct();
-  }, [sortType, searchValue, currentPage]);
-
-  const likeProduct = async (index:number) => {
+  const likeProduct = async (index: number) => {
     const updatedProduct = JSON.parse(JSON.stringify(products));
     updatedProduct[index].liked = !updatedProduct[index].liked;
 
@@ -54,11 +49,15 @@ export const FavouritePage: React.FC = () => {
         'https://62cfc4261cc14f8c087ce036.mockapi.io/Shop' + '/' + updatedProduct[index].id,
         updatedProduct[index],
       );
-       getProduct();
+      getProduct();
     } catch (error) {
       console.log(error);
     }
   };
+
+  React.useEffect(() => {
+    getProduct();
+  }, [sortType, searchValue, currentPage]);
 
   return (
     <Content>
@@ -72,25 +71,25 @@ export const FavouritePage: React.FC = () => {
           <div className={styles.filterBlock}>
             <Input />
           </div>
-          {products.filter((item:any) => item.liked).length > 0 ? (
+          {products.filter((item: any) => item.liked).length > 0 ? (
             <Content className={styles.content}>
-					<>
-              {loading
-                ? [...new Array(10)].map((_, index) => {
-                    <ContentCardSkeleton key={index} />;
-                  })
-                : products
-                    .filter((item:any) => item.liked === true)
-                    .map((product:any, index:number) => {
-                      return (
-                        <ContentCard
-                          key={product.name}
-                          likeProduct={() => likeProduct(index)}
-                          {...product}
-                        />
-                      );
-                    })}
-						  </>
+              <>
+                {loading
+                  ? [...new Array(10)].map((_, index) => {
+                      <ContentCardSkeleton key={index} />;
+                    })
+                  : products
+                      .filter((item: any) => item.liked === true)
+                      .map((product: any, index: number) => {
+                        return (
+                          <ContentCard
+                            key={product.name}
+                            likeProduct={() => likeProduct(index)}
+                            {...product}
+                          />
+                        );
+                      })}
+              </>
             </Content>
           ) : (
             <EmptyCart

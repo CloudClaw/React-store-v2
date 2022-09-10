@@ -29,7 +29,8 @@ export const ContentCard: React.FC<ContentCardProps> = ({ id, img, price, name, 
   const customFillingLike = liked ? 'crimson' : 'black';
   const customFillingCart = cart ? 'crimson' : 'black';
 
-  const onClickAddToCart = () => {
+  const onClickAddToCart = (e:React.MouseEvent<SVGSVGElement>) => {
+	e.preventDefault()
     const item = {
       id,
       name,
